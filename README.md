@@ -1,4 +1,4 @@
-# Layer-wise Relevance Propagation 
+# Layer-wise Relevance Propagation heatmap + ranking + pruning
 ## generates LRP heatmaps on normal and cifar100 images also ranks layers' filters relevance scores
 Special thanks to [github repo for Layer-wise Relevance Propagation in PyTorch](https://github.com/kaifishr/PyTorchRelevancePropagation) who's code is the basis of this project.
 
