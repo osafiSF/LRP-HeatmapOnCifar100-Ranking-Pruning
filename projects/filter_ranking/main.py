@@ -11,17 +11,17 @@ import argparse
 import torch
 import torchvision
 import copy
-
+from src.models.vgg_cifar import vgg11_cifar100
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
-model_path = Path(__file__).resolve().parents[2] / "models" / "VGG11.pt"
 
-with torch.serialization.safe_globals([torchvision.models.vgg.VGG]):
-    model = torch.load(model_path, map_location=device, weights_only=False)
-
+model = vgg11_cifar100(pretrained=False)
+# model.load_state_dict(torch.load("models/vgg11_cifar100_finetuned.pt"))
+model.load_state_dict(torch.load("models/vgg11_cifar100_finetuned.pt", map_location=device))
 model.to(device)
 model.eval()
+print(model)
 
 original_model = model
 model_lrp = copy.deepcopy(original_model)
@@ -33,7 +33,11 @@ parser.add_argument("--batch_size", default=32, type=int)
 parser.add_argument("--resize", default=32, type=int)
 config = parser.parse_args([])  # چون فعلاً CLI نداریم
 
-dataloader = get_data_loader(config)
+dataloader = get_data_loader(
+    train=False,
+    batch_size=config.batch_size,
+    resize=config.resize
+)
 
 
 acc = RelevanceAccumulator()

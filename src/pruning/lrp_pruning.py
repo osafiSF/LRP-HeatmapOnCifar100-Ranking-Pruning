@@ -110,10 +110,21 @@ def lrp_based_pruning(model, rankings, prune_ratio=0.2):
         num_filters = info["num_filters"]
         k = int(prune_ratio * num_filters)
 
-        prune_indices = info["sorted_indices"][-k:].tolist()
+        sorted_indices = info["sorted_indices"]
+        sorted_scores = info["sorted_scores"]
+
+        prune_indices = sorted_indices[-k:].tolist()
+        prune_scores = sorted_scores[-k:]
 
         print(f"[LRP-PRUNE] {layer_name}: pruning {k}/{num_filters}")
+
+        # for idx, score in zip(prune_indices, prune_scores):
+        #     print(
+        #         f"    └─ pruned filter {idx:4d} | relevance={score:.6e}"
+        #     )
+
         prune_conv_layer(model, layer_name, prune_indices)
+
 
     # ==== FIX CLASSIFIER INPUT DIM ====
     _fix_vgg_classifier(model)

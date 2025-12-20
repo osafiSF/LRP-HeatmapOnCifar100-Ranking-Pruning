@@ -10,11 +10,18 @@ def magnitude_pruning(model, prune_ratio=0.2):
             num_filters = weight_norm.numel()
             k = int(prune_ratio * num_filters)
 
-            prune_indices = torch.argsort(weight_norm)[:k].tolist()
+            sorted_indices = torch.argsort(weight_norm)
+            prune_indices = sorted_indices[:k].tolist()
 
             print(f"[MAG-PRUNE] {name}: pruning {k}/{num_filters}")
 
+            # for idx in prune_indices:
+            #     print(
+            #         f"    └─ pruned filter {idx:4d} | L1-norm={weight_norm[idx]:.6e}"
+            #     )
+
             prune_conv_layer(model, name, prune_indices)
+
 
     # fix classifier like LRP
     _fix_vgg_classifier(model)
